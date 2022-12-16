@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="lib">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/EN2_EatNRun/lib/gui-1.3.0-20211106.114106-4-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/EN2_EatNRun/lib/gui-1.3.0-20211106.114106-4.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

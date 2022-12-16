@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="lib (2)">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/EN2_EatNRun/lib" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/EN2_EatNRun/lib" />
+    </SOURCES>
+    <jarDirectory url="file://$PROJECT_DIR$/EN2_EatNRun/lib" recursive="false" />
+    <jarDirectory url="file://$PROJECT_DIR$/EN2_EatNRun/lib" recursive="false" type="SOURCES" />
+  </library>
+</component>
