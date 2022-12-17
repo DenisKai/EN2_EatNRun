@@ -1,0 +1,155 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+class src.gui.Finish {
++ void drawFinish(Window)
+}
+
+class src.gui.Obstacle {
++ void drawObstacle(Window)
++ boolean intersects(GameObjectBase)
+- boolean checkEnemyCollision(Enemy)
+- boolean checkPlayerCollision(Player)
+}
+
+abstract class src.gui.MovableObject {
++ void move(int,int)
++ boolean checkCollision(Obstacle[])
+}
+
+class src.logic.LevelParser {
++ {static} String[] loadTextFile(int)
++ {static} int getNumberOfLevels()
+}
+
+abstract class src.gui.GameObjectBase {
+# int x
+# int y
+# int width
+# int height
++ void drawGeometry(Window)
++ void drawImage(Window,String)
++ boolean intersects(GameObjectBase)
+}
+
+class src.EatNRun {
+- {static} int WIDTH
+- {static} int HEIGHT
++ {static} void main(String[])
+- {static} void displayMessage(Window,String)
+}
+
+class src.gui.Enemy {
+- int velocityX
+- int velocityY
++ void drawEnemy(Window)
++ void move(Obstacle[])
++ int getVelocityX()
++ int getVelocityY()
+}
+
+class src.gui.Player {
+- int spawnX
+- int spawnY
+- int score
+- int lives
+- int movementSpeed
++ void drawPlayer(Window)
++ int addScore()
++ int getScore()
++ int getLives()
++ void loseLife()
++ void move(Direction,Obstacle[])
+- void resetPlayer()
+}
+
+class src.gui.ImageBound {
+}
+
+class ch.fhnw.oop1.eatnrun.util.Sound {
++ {static} String SLURP
++ {static} String SUCCESS
++ {static} String GAME_OVER
++ {static} String DIE
+- {static} LinkedBlockingQueue<String> clips
+- {static} Thread worker
+- {static} void runWorker()
++ {static} void playSound(String)
+}
+
+class src.gui.Cake {
++ void drawCake(Window)
+}
+
+class src.gui.ObjectBound {
+# int leftBoundary
+# int rightBoundary
+# int topBoundary
+# int bottomBoundary
+}
+
+class src.logic.EatNRunGame {
+- int width
+- int height
++ {static} int GAMEOBJECT_WIDTH
++ {static} int GAMEOBJECT_HEIGHT
+- int currentLevel
+- GameStatus gameStatus
++ void drawGame(Window)
++ void handleGameEvents()
++ GameStatus getGameStatus()
++ void handlePlayerEvents(Window)
+- void parseLevel()
+- void setupGameElements(String[])
+- void generateObject(char, int, int)
+- void setupObjectStores(String[])
+- void addToArray(GameObjectBase)
+- void changeLevel()
+- void clearGame()
+}
+
+enum src.logic.Direction {
+    UP
+    DOWN
+    LEFT
+    RIGHT
+}
+
+enum src.logic.GameStatus {
+    ONGOING
+    WON
+    LOST
+}
+
+interface src.gui.ImageInterface {
+~ String BASE_URL
+}
+
+src.EatNRun ..> src.logic.EatNRunGame: <<uses>>
+src.EatNRun ..> src.logic.GameStatus: <<uses>>
+
+src.logic.EatNRunGame ..> src.logic.LevelParser: <<uses>>
+src.logic.EatNRunGame ..> ch.fhnw.oop1.eatnrun.util.Sound: <<uses>>
+src.logic.EatNRunGame -> "- player 1" src.gui.Player
+src.logic.EatNRunGame -> "- finish 1" src.gui.Finish
+src.logic.EatNRunGame -> "- obstacles 0..*" src.gui.Obstacle
+src.logic.EatNRunGame -> "- enemies 0..*" src.gui.Enemy
+src.logic.EatNRunGame -> "- cakes 0..*" src.gui.Cake
+src.logic.EatNRunGame ..> src.logic.Direction: <<uses>>
+
+src.gui.Player ..> src.logic.Direction: <<uses>>
+
+src.gui.ImageInterface <|.. src.gui.Finish
+src.gui.GameObjectBase <|-- src.gui.Finish
+src.gui.GameObjectBase <|-- src.gui.Obstacle
+src.gui.GameObjectBase <|-- src.gui.MovableObject
+src.gui.ImageInterface <|.. src.gui.Enemy
+src.gui.MovableObject <|-- src.gui.Enemy
+src.gui.ImageInterface <|.. src.gui.Player
+src.gui.MovableObject <|-- src.gui.Player
+src.gui.ObjectBound <|-- src.gui.ImageBound
+src.gui.ImageInterface <|.. src.gui.Cake
+src.gui.GameObjectBase <|-- src.gui.Cake
+src.gui.Obstacle ..> src.gui.ImageBound: <<uses>>
+src.gui.Obstacle ..> src.gui.ObjectBound: <<uses>>
+@enduml

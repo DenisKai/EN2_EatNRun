@@ -5,17 +5,17 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 public class LevelParser {
-    private static String[] loadTextFile(int level) {
+    public static String[] loadTextFile(int level) {
         try {
-            return Files.readAllLines(Paths.get("EN2_EatNRun","resources", "maps", level + ".txt")).toArray(new String[]{});
-        } catch(IOException iox) {
+            return Files.readAllLines(Paths.get("EN2_EatNRun", "resources", "maps", level + ".txt")).toArray(new String[]{});
+        } catch (IOException iox) {
             throw new RuntimeException(iox);
         }
     }
 
     public static int getNumberOfLevels() {
         try {
-            return (int) Files.list(Paths.get("EN2_EatNRun","resources", "maps"))
+            return (int) Files.list(Paths.get("EN2_EatNRun", "resources", "maps"))
                     .filter(p -> p.toFile().getName().endsWith(".txt"))
                     .count();
         } catch (IOException e) {

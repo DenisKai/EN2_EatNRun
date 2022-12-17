@@ -1,23 +1,22 @@
 package ch.fhnw.oop1.eatnrun.util;
 
-import java.io.File;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.LinkedBlockingQueue;
-
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineEvent;
+import java.io.File;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
- * Funktionalität um Audio-Dateien abzuspielen. 
+ * Funktionalität um Audio-Dateien abzuspielen.
  */
 public final class Sound {
-    public static final String SLURP = "resources/sounds/slurp.wav";
-    public static final String SUCCESS = "resources/sounds/success.wav";
-    public static final String GAME_OVER = "resources/sounds/gameover.wav";
-    public static final String DIE = "resources/sounds/die.wav";
-    
+    public static final String SLURP = "EN2_EatNRun/resources/sounds/slurp.wav";
+    public static final String SUCCESS = "EN2_EatNRun/resources/sounds/success.wav";
+    public static final String GAME_OVER = "EN2_EatNRun/resources/sounds/gameover.wav";
+    public static final String DIE = "EN2_EatNRun/resources/sounds/die.wav";
+
     private static final LinkedBlockingQueue<String> clips = new LinkedBlockingQueue<>();
     private static final Thread worker = new Thread(() -> runWorker());
 

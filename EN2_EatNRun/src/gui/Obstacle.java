@@ -14,7 +14,7 @@ public class Obstacle extends GameObjectBase {
     @Override
     public boolean intersects(GameObjectBase otherObject) {
         if (otherObject instanceof Player) {
-            return checkPlayerCollision(otherObject);
+            return checkPlayerCollision((Player) otherObject);
         }
 
         if (otherObject instanceof Enemy) {
@@ -25,36 +25,29 @@ public class Obstacle extends GameObjectBase {
     }
 
     private boolean checkEnemyCollision(Enemy enemy) {
-        final int enemyLeft = enemy.x - enemy.width / 2;
-        final int enemyRight = enemy.x + enemy.width / 2;
-        final int enemyTop = enemy.y - enemy.height / 2;
-        final int enemyBottom = enemy.y + enemy.height / 2;
-
-        final int obstacleLeft = this.x;
-        final int obstacleRight = this.x + width;
-        final int obstacleTop = this.y;
-        final int obstacleBottom = this.y + height;
+        ImageBound enemyBoundaries = new ImageBound(enemy.x, enemy.y, enemy.width, enemy.height);
+        ObjectBound obstacleBoundaries = new ObjectBound(x, y, width, height);
 
         if (enemy.getVelocityX() != 0) {
-            if (obstacleTop == enemyTop && enemyBottom == obstacleBottom) {
+            if (obstacleBoundaries.topBoundary == enemyBoundaries.topBoundary && enemyBoundaries.bottomBoundary == obstacleBoundaries.bottomBoundary) {
                 // Left collision
-                if (enemyRight - obstacleRight > 0) {
-                    return (enemyLeft < obstacleRight);
+                if (enemyBoundaries.rightBoundary - obstacleBoundaries.rightBoundary > 0) {
+                    return (enemyBoundaries.leftBoundary < obstacleBoundaries.rightBoundary);
                     // Right collision
-                } else if (enemyLeft - obstacleLeft < 0) {
-                    return (enemyRight > obstacleLeft);
+                } else if (enemyBoundaries.leftBoundary - obstacleBoundaries.leftBoundary < 0) {
+                    return (enemyBoundaries.rightBoundary > obstacleBoundaries.leftBoundary);
                 }
             }
         }
 
         if (enemy.getVelocityY() != 0) {
-            if (enemyLeft == obstacleLeft && enemyRight == obstacleRight) {
+            if (enemyBoundaries.leftBoundary == obstacleBoundaries.leftBoundary && enemyBoundaries.rightBoundary == obstacleBoundaries.rightBoundary) {
                 // Top collision
-                if (enemyTop - obstacleTop > 0) {
-                    return (enemyTop < obstacleBottom);
+                if (enemyBoundaries.topBoundary - obstacleBoundaries.topBoundary > 0) {
+                    return (enemyBoundaries.topBoundary < obstacleBoundaries.bottomBoundary);
                     // Bottom collision
-                } else if (enemyBottom - obstacleBottom < 0) {
-                    return (enemyBottom > obstacleTop);
+                } else if (enemyBoundaries.bottomBoundary - obstacleBoundaries.bottomBoundary < 0) {
+                    return (enemyBoundaries.bottomBoundary > obstacleBoundaries.topBoundary);
                 }
             }
         }
@@ -62,34 +55,27 @@ public class Obstacle extends GameObjectBase {
         return false;
     }
 
-    private boolean checkPlayerCollision(GameObjectBase otherObject) {
-        final int playerLeft = otherObject.x - otherObject.width / 2;
-        final int playerRight = otherObject.x + otherObject.width / 2;
-        final int playerTop = otherObject.y - otherObject.height / 2;
-        final int playerBottom = otherObject.y + otherObject.height / 2;
+    private boolean checkPlayerCollision(Player player) {
+        ImageBound playerBoundaries = new ImageBound(player.x, player.y, player.width, player.height);
+        ObjectBound obstacleBoundaries = new ObjectBound(x, y, width, height);
 
-        final int obstacleLeft = this.x;
-        final int obstacleRight = this.x + width;
-        final int obstacleTop = this.y;
-        final int obstacleBottom = this.y + height;
-
-        if ((obstacleTop < playerTop && playerTop < obstacleBottom) || (obstacleTop < playerBottom && playerBottom < obstacleBottom)) {
+        if ((obstacleBoundaries.topBoundary < playerBoundaries.topBoundary && playerBoundaries.topBoundary < obstacleBoundaries.bottomBoundary) || (obstacleBoundaries.topBoundary < playerBoundaries.bottomBoundary && playerBoundaries.bottomBoundary < obstacleBoundaries.bottomBoundary)) {
             // Left collision
-            if (playerRight - obstacleRight > 0) {
-                return (playerLeft < obstacleRight);
+            if (playerBoundaries.rightBoundary - obstacleBoundaries.rightBoundary > 0) {
+                return (playerBoundaries.leftBoundary < obstacleBoundaries.rightBoundary);
                 // Right collision
-            } else if (playerTop - obstacleTop > 0) {
-                return (playerRight > obstacleLeft);
+            } else if (playerBoundaries.topBoundary - obstacleBoundaries.topBoundary > 0) {
+                return (playerBoundaries.rightBoundary > obstacleBoundaries.leftBoundary);
             }
         }
 
-        if ((obstacleLeft < playerLeft && playerLeft < obstacleRight) || (obstacleLeft < playerRight && playerRight < obstacleRight)) {
+        if ((obstacleBoundaries.leftBoundary < playerBoundaries.leftBoundary && playerBoundaries.leftBoundary < obstacleBoundaries.rightBoundary) || (obstacleBoundaries.leftBoundary < playerBoundaries.rightBoundary && playerBoundaries.rightBoundary < obstacleBoundaries.rightBoundary)) {
             // Top Collision
-            if (playerTop - obstacleTop > 0) {
-                return (playerTop < obstacleBottom);
+            if (playerBoundaries.topBoundary - obstacleBoundaries.topBoundary > 0) {
+                return (playerBoundaries.topBoundary < obstacleBoundaries.bottomBoundary);
                 // Bottom Collision
-            } else if (playerBottom - obstacleBottom < 0) {
-                return (playerBottom > obstacleTop);
+            } else if (playerBoundaries.bottomBoundary - obstacleBoundaries.bottomBoundary < 0) {
+                return (playerBoundaries.bottomBoundary > obstacleBoundaries.topBoundary);
             }
         }
 

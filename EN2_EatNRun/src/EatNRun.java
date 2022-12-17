@@ -19,7 +19,7 @@ public class EatNRun {
             if (game.getGameStatus().equals(GameStatus.ONGOING)) {
                 game.handlePlayerEvents(window);
 
-                game.handleGameEvents(window);
+                game.handleGameEvents();
 
                 game.drawGame(window);
 
@@ -30,7 +30,7 @@ public class EatNRun {
 
                 if (game.getGameStatus().equals(GameStatus.WON)) {
                     displayMessage(window, "You Win!");
-                } else {
+                } else if (game.getGameStatus().equals(GameStatus.LOST)) {
                     displayMessage(window, "Game Over!");
                 }
             }

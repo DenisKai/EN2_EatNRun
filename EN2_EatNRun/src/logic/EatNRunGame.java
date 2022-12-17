@@ -1,11 +1,13 @@
 package src.logic;
 
+import ch.fhnw.oop1.eatnrun.util.Sound;
 import gui.Window;
-import src.gui.*;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import src.gui.Cake;
+import src.gui.Enemy;
+import src.gui.Finish;
+import src.gui.GameObjectBase;
+import src.gui.Obstacle;
+import src.gui.Player;
 
 public class EatNRunGame {
     private final int width;
@@ -14,7 +16,6 @@ public class EatNRunGame {
     public static final int GAMEOBJECT_WIDTH = 40;
     public static final int GAMEOBJECT_HEIGHT = 40;
 
-    //TODO better handling of drawable figures
     private Player player;
     private Enemy[] enemies;
     private Obstacle[] obstacles;
@@ -54,11 +55,12 @@ public class EatNRunGame {
 
         window.setColor(255, 255, 255);
         window.setFontSize(24);
-        window.drawStringCentered(String.format("Cakes: %s Lifes: %s Level: %s", player.getScore(), player.getLives(), this.currentLevel), width / 2, height - 10);
+        window.drawStringCentered(String.format("Cakes: %s Lifes: %s Level: %s", player.getScore(), player.getLives(), this.currentLevel), width / 2, GAMEOBJECT_HEIGHT - 10);
     }
 
-    public void handleGameEvents(Window window) {
+    public void handleGameEvents() {
         if (player.intersects(finish)) {
+            Sound.playSound(Sound.SUCCESS);
             changeLevel();
         }
 
@@ -68,8 +70,10 @@ public class EatNRunGame {
 
         for (Enemy enemy : enemies) {
             if (player.intersects(enemy)) {
+                Sound.playSound(Sound.DIE);
                 player.loseLife();
                 if (player.getLives() < 1) {
+                    Sound.playSound(Sound.GAME_OVER);
                     gameStatus = GameStatus.LOST;
                 }
             }
@@ -77,6 +81,7 @@ public class EatNRunGame {
 
         for (int i = 0; i < cakes.length; i++) {
             if (cakes[i] != null && player.intersects(cakes[i])) {
+                Sound.playSound(Sound.SLURP);
                 player.addScore();
                 cakes[i] = null;
             }
@@ -103,62 +108,66 @@ public class EatNRunGame {
     }
 
     private void parseLevel() {
-        String[] abstractLevel = loadTextFile(currentLevel);
+        String[] abstractLevel = LevelParser.loadTextFile(currentLevel);
         clearGame();
-        setupGame(abstractLevel);
+        setupObjectStores(abstractLevel);
+        setupGameElements(abstractLevel);
+    }
 
+    private void setupGameElements(String[] abstractLevel) {
         for (int y = 0; y < abstractLevel.length; y++) {
             char[] layer = abstractLevel[y].toCharArray();
 
             for (int x = 0; x < layer.length; x++) {
-                final int positionX = GAMEOBJECT_WIDTH * x;
-                final int positionY = GAMEOBJECT_HEIGHT * y;
-
-                switch (layer[x]) {
-                    case '#':
-                        addToArray(new Obstacle(positionX, positionY));
-                        break;
-
-                    case 'P':
-                        if (player != null) {
-                            this.player = new Player(positionX, positionY, this.player.getLives(), this.player.getScore());
-                        } else {
-                            this.player = new Player(positionX, positionY);
-                        }
-                        break;
-
-                    case 'F':
-                        this.finish = new Finish(positionX + GAMEOBJECT_WIDTH / 2, positionY + GAMEOBJECT_HEIGHT / 2);
-                        break;
-
-                    case 'C':
-                        addToArray(new Cake(positionX + GAMEOBJECT_WIDTH / 2, positionY + GAMEOBJECT_HEIGHT / 2));
-                        break;
-
-                    case 'N':
-                        addToArray(new Enemy(positionX + GAMEOBJECT_WIDTH / 2, positionY + GAMEOBJECT_HEIGHT / 2, 0, -5));
-                        break;
-
-                    case 'E':
-                        addToArray(new Enemy(positionX + GAMEOBJECT_WIDTH / 2, positionY + GAMEOBJECT_HEIGHT / 2, 5, 0));
-                        break;
-
-                    case 'S':
-                        addToArray(new Enemy(positionX + GAMEOBJECT_WIDTH / 2, positionY + GAMEOBJECT_HEIGHT / 2, 0, 5));
-                        break;
-
-                    case 'W':
-                        addToArray(new Enemy(positionX + GAMEOBJECT_WIDTH / 2, positionY + GAMEOBJECT_HEIGHT / 2, -5, 0));
-                        break;
-
-                    default:
-                        break;
-                }
+                generateObject(layer[x], GAMEOBJECT_WIDTH * x, GAMEOBJECT_HEIGHT * y);
             }
         }
     }
 
-    private void setupGame(String[] abstractLevel) {
+    private void generateObject(char objectChar, int positionX, int positionY) {
+        switch (objectChar) {
+            case '#':
+                addToArray(new Obstacle(positionX, positionY));
+                break;
+
+            case 'P':
+                if (player != null) {
+                    this.player = new Player(positionX, positionY, this.player.getLives(), this.player.getScore());
+                } else {
+                    this.player = new Player(positionX, positionY);
+                }
+                break;
+
+            case 'F':
+                this.finish = new Finish(positionX + GAMEOBJECT_WIDTH / 2, positionY + GAMEOBJECT_HEIGHT / 2);
+                break;
+
+            case 'C':
+                addToArray(new Cake(positionX + GAMEOBJECT_WIDTH / 2, positionY + GAMEOBJECT_HEIGHT / 2));
+                break;
+
+            case 'N':
+                addToArray(new Enemy(positionX + GAMEOBJECT_WIDTH / 2, positionY + GAMEOBJECT_HEIGHT / 2, 0, -5));
+                break;
+
+            case 'E':
+                addToArray(new Enemy(positionX + GAMEOBJECT_WIDTH / 2, positionY + GAMEOBJECT_HEIGHT / 2, 5, 0));
+                break;
+
+            case 'S':
+                addToArray(new Enemy(positionX + GAMEOBJECT_WIDTH / 2, positionY + GAMEOBJECT_HEIGHT / 2, 0, 5));
+                break;
+
+            case 'W':
+                addToArray(new Enemy(positionX + GAMEOBJECT_WIDTH / 2, positionY + GAMEOBJECT_HEIGHT / 2, -5, 0));
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    private void setupObjectStores(String[] abstractLevel) {
         int countObstacles = 0;
         int countEnemies = 0;
         int countCakes = 0;
@@ -223,14 +232,6 @@ public class EatNRunGame {
         } else {
             currentLevel++;
             parseLevel();
-        }
-    }
-
-    private static String[] loadTextFile(int level) {
-        try {
-            return Files.readAllLines(Paths.get("EN2_EatNRun", "resources", "maps", level + ".txt")).toArray(new String[]{});
-        } catch (IOException iox) {
-            throw new RuntimeException(iox);
         }
     }
 

@@ -4,7 +4,7 @@ import gui.Window;
 import src.logic.Direction;
 import src.logic.EatNRunGame;
 
-public class Player extends MovableObject {
+public class Player extends MovableObject implements ImageInterface {
     private final int spawnX;
     private final int spawnY;
     private int score;
@@ -25,7 +25,7 @@ public class Player extends MovableObject {
     }
 
     public void drawPlayer(Window window) {
-        super.drawImage(window, "EN2_EatNRun/resources/images/hero.png");
+        super.drawImage(window, BASE_URL + "hero.png");
     }
 
     public int addScore() {
@@ -39,6 +39,7 @@ public class Player extends MovableObject {
     public int getLives() {
         return this.lives;
     }
+
     public void loseLife() {
         resetPlayer();
         this.lives--;
