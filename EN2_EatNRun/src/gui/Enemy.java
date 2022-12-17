@@ -2,7 +2,7 @@ package src.gui;
 
 import gui.Window;
 
-public class Enemy extends MovableObject {
+public class Enemy extends MovableObject implements ImageInterface {
     private int velocityX;
     private int velocityY;
 
@@ -13,7 +13,7 @@ public class Enemy extends MovableObject {
     }
 
     public void drawEnemy(Window window) {
-        drawImage(window, "EN2_EatNRun/resources/images/monster.png");
+        drawImage(window, BASE_URL + "monster.png");
     }
 
     public void move(Obstacle[] obstacles) {
