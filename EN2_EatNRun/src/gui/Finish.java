@@ -1,4 +1,4 @@
-package src.objects;
+package src.gui;
 
 import gui.Window;
 

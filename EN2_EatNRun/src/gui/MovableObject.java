@@ -1,4 +1,4 @@
-package src.objects;
+package src.gui;
 
 public class MovableObject extends GameObjectBase {
 
@@ -13,5 +13,17 @@ public class MovableObject extends GameObjectBase {
     public void move(int dx, int dy) {
         this.x = dx;
         this.y = dy;
-    };
+    }
+
+    ;
+
+    public boolean checkCollision(Obstacle[] obstacles) {
+        for (Obstacle obstacle : obstacles) {
+            if (obstacle.intersects(this)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

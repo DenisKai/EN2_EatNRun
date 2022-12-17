@@ -1,7 +1,7 @@
 package src.logic;
 
 import gui.Window;
-import src.objects.*;
+import src.gui.*;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -11,8 +11,8 @@ public class EatNRunGame {
     private final int width;
     private final int height;
 
-    private final int GAMEOBJECT_WIDTH = 40;
-    private final int GAMEOBJECT_HEIGHT = 40;
+    public static final int GAMEOBJECT_WIDTH = 40;
+    public static final int GAMEOBJECT_HEIGHT = 40;
 
     //TODO better handling of drawable figures
     private Player player;
@@ -38,23 +38,23 @@ public class EatNRunGame {
         player.drawPlayer(window);
         finish.drawFinish(window);
 
-        for (Cake cake: cakes) {
+        for (Cake cake : cakes) {
             if (cake != null) {
                 cake.drawCake(window);
             }
         }
 
-        for (Obstacle obstacle: obstacles) {
+        for (Obstacle obstacle : obstacles) {
             obstacle.drawObstacle(window);
         }
 
-        for (Enemy enemy: enemies) {
+        for (Enemy enemy : enemies) {
             enemy.drawEnemy(window);
         }
 
         window.setColor(255, 255, 255);
         window.setFontSize(24);
-        window.drawStringCentered(String.format("Cakes: %s Lifes: %s Level: %s", player.getScore(), player.getLives(), this.currentLevel), width / 2,GAMEOBJECT_HEIGHT - 10);
+        window.drawStringCentered(String.format("Cakes: %s Lifes: %s Level: %s", player.getScore(), player.getLives(), this.currentLevel), width / 2, height - 10);
     }
 
     public void handleGameEvents(Window window) {
@@ -62,12 +62,11 @@ public class EatNRunGame {
             changeLevel();
         }
 
-        //TODO enemy <> wall
-        for (Enemy enemy: enemies) {
+        for (Enemy enemy : enemies) {
             enemy.move(obstacles);
         }
 
-        for (Enemy enemy: enemies) {
+        for (Enemy enemy : enemies) {
             if (player.intersects(enemy)) {
                 player.loseLife();
                 if (player.getLives() < 1) {
@@ -122,7 +121,7 @@ public class EatNRunGame {
 
                     case 'P':
                         if (player != null) {
-                            this.player = new Player(positionX, positionY, this.player.getScore());
+                            this.player = new Player(positionX, positionY, this.player.getLives(), this.player.getScore());
                         } else {
                             this.player = new Player(positionX, positionY);
                         }

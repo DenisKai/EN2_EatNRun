@@ -1,14 +1,15 @@
-package src.objects;
+package src.gui;
 
 import gui.Window;
 import src.logic.Direction;
+import src.logic.EatNRunGame;
 
 public class Player extends MovableObject {
     private final int spawnX;
     private final int spawnY;
     private int score;
     private int lives;
-    private final int MOVEMENT_SPEED = 5;
+    private final int movementSpeed = 5;
 
     public Player(int x, int y) {
         super(x + 20, y + 20, 20, 30);
@@ -17,8 +18,9 @@ public class Player extends MovableObject {
         this.lives = 5;
     }
 
-    public Player(int x, int y, int score) {
+    public Player(int x, int y, int lives, int score) {
         this(x, y);
+        this.lives = lives;
         this.score = score;
     }
 
@@ -43,42 +45,30 @@ public class Player extends MovableObject {
     }
 
     public void move(Direction direction, Obstacle[] obstacles) {
-        final int CURRENT_X = this.x;
-        final int CURRENT_Y = this.y;
+        final int currentX = this.x;
+        final int currentY = this.y;
 
         if (direction.equals(Direction.UP)) {
-            this.y = y - MOVEMENT_SPEED;
+            move(this.x, this.y - movementSpeed);
         }
         if (direction.equals(Direction.LEFT)) {
-            this.x = x - MOVEMENT_SPEED;
+            move(this.x - movementSpeed, this.y);
         }
         if (direction.equals(Direction.DOWN)) {
-            this.y = y + MOVEMENT_SPEED;
+            move(this.x, this.y + movementSpeed);
         }
         if (direction.equals(Direction.RIGHT)) {
-            this.x = x + MOVEMENT_SPEED;
+            move(this.x + movementSpeed, this.y);
         }
 
-        if (!checkCollision(this, obstacles)) {
-            super.move(this.x, this.y);
-        } else {
-            this.x = CURRENT_X;
-            this.y = CURRENT_Y;
+        if (checkCollision(obstacles)) {
+            this.x = currentX;
+            this.y = currentY;
         }
-    }
-
-    private boolean checkCollision(Player player, Obstacle[] obstacles) {
-        boolean collision = false;
-
-        for (Obstacle obstacle: obstacles) {
-            collision = player.intersects(obstacle);
-        }
-
-        return collision;
     }
 
     private void resetPlayer() {
-        this.x = this.spawnX + width / 2;
-        this.y = this.spawnY + height / 2;
+        this.x = this.spawnX + EatNRunGame.GAMEOBJECT_WIDTH / 2;
+        this.y = this.spawnY + EatNRunGame.GAMEOBJECT_HEIGHT / 2;
     }
 }

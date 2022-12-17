@@ -1,4 +1,4 @@
-package src.objects;
+package src.gui;
 
 import gui.Window;
 
@@ -17,13 +17,24 @@ public class Enemy extends MovableObject {
     }
 
     public void move(Obstacle[] obstacles) {
-        super.move(x + velocityX, y + velocityY);
+        final int currentX = x;
+        final int currentY = y;
 
-        for (Obstacle obstacle: obstacles) {
-            if (this.intersects(obstacle)) {
-                velocityY *= -1;
-                velocityX *= -1;
-            }
+        move(x + velocityX, y + velocityY);
+
+        if (checkCollision(obstacles)) {
+            x = currentX;
+            y = currentY;
+            velocityX *= -1;
+            velocityY *= -1;
         }
+    }
+
+    public int getVelocityX() {
+        return velocityX;
+    }
+
+    public int getVelocityY() {
+        return velocityY;
     }
 }
